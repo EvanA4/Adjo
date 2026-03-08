@@ -4,6 +4,7 @@ import { Dispatch, SetStateAction, useState } from "react";
 import FileUploader from "./FileUploader";
 import { Guess } from "@/types/guess";
 import { searchImage } from "@/utils/client/image";
+import imageCompression from "browser-image-compression";
 
 function PlantForm(props: {
     setGuesses: Dispatch<SetStateAction<Guess[]>>
@@ -14,11 +15,20 @@ function PlantForm(props: {
         if (uploaded) {
             const splitdot = uploaded.name.split(".");
             const ext = splitdot[splitdot.length-1];
-            const toUpload = new File([uploaded], `delete-adjo.${ext}`, {
+            const largeFile = new File([uploaded], `delete-adjo.${ext}`, {
                 type: uploaded.type,
                 lastModified: uploaded.lastModified
             });
-            const res = await searchImage(toUpload);
+
+            // shrink file
+            const options = {
+                maxSizeMB: 1,
+                maxWidthOrHeight: 1920,
+                useWebWorker: true,
+            };
+            const smallFile = await imageCompression(largeFile, options);
+
+            const res = await searchImage(smallFile);
             const rerr = res.anticipate();
             if (rerr.error) {
                 console.log(`Failed to get guesses: ${rerr.message}`);
