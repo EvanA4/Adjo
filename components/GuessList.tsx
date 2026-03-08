@@ -43,7 +43,7 @@ function GuessList(props: {
             </div>
             <div className="w-full flex justify-center mt-5">
                 <button
-                    className="px-3 py-2 bg-blue-600 hover:bg-blue-500 rounded-lg cursor-pointer"
+                    className="px-3 py-2 bg-blue-600 active:bg-blue-500 rounded-lg cursor-pointer"
                     onClick={() => props.setGuesses([])}
                 >
                     Clear results
